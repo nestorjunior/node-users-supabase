@@ -38,8 +38,22 @@ const UserModel = {
     return data;
   },
 
-  async deleteUser(email) {
-    const { error } = await supabase.from("users").delete().eq("email", email);
+  async findByIdAndUpdate(id, newData) {
+    const { data, error } = await supabase
+      .from("users")
+      .update(newData)
+      .eq("id", id)
+      .select("*");
+
+    if (error) {
+      console.error("Erro ao buscar usuário por id:", error.message);
+      throw new Error(error.message);
+    }
+    return data[0];
+  },
+
+  async deleteUser(id) {
+    const { error } = await supabase.from("users").delete().eq("id", id);
     if (error) {
       console.error("Error deleting user:", error.message);
       throw new Error(error.message);

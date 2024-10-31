@@ -32,16 +32,32 @@ app.get("/users", async (req, res) => {
 app.get("/users/:email", async (req, res) => {
   try {
     const user = await UserModel.getUserByEmail(req.params.email);
-    if (user) res.json(user);
+
+    if (user) res.status(200).json(user);
     else res.status(404).send("User not found");
   } catch (error) {
     res.status(500).send("Error searching for user");
   }
 });
 
-app.delete("/users/:email", async (req, res) => {
+app.patch("/users/:id", async (req, res) => {
   try {
-    await UserModel.deleteUser(req.params.email);
+    const id = req.params.id;
+    const user = await UserModel.findByIdAndUpdate(id, req.body);
+
+    if (user) {
+      res.status(200).json(user);
+    } else {
+      res.status(404).send("User not found");
+    }
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+});
+
+app.delete("/users/:id", async (req, res) => {
+  try {
+    await UserModel.deleteUser(req.params.id);
     res.send("User deleted successfully");
   } catch (error) {
     res.status(500).send("Error deleting user");
