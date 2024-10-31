@@ -6,7 +6,14 @@ const { supabase } = require("../database/connect");
 const app = express();
 const port = 3000;
 app.use(express.json());
+app.set("view engine", "ejs");
+app.set("views", "src/views");
+
 connectDatabase();
+
+app.get("/views/users", async (req, res) => {
+  res.render("index");
+});
 
 app.post("/users", async (req, res) => {
   const { first_name, last_name, email } = req.body;
